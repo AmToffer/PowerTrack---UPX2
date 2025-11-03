@@ -22,36 +22,51 @@ Além disso, este dashboard simula o "painel digital acessível por computador o
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)  
 ↪️ Responsável pela manipulação e estruturação dos dados históricos.
 
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)  
-↪️ Utilizado para a geração de dados aleatórios simulados.
+[![Unity](https://img.shields.io/badge/Unity-808080?style=for-the-badge&logo=unity&logoColor=white)](https://unity.com/)  
+↪️ Utilizado para a simulação do protótipo.
+
+[![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)  
+↪️ Biblioteca usada para a criação da API.
 
 
 ## 🚀 Como Executar
 1. **Pré-requisitos**  
-Certifique-se de que você tem o Python 3 instalado em sua máquina.
+Certifique-se de que você tem o Python 3 e o Unity 3 instalado em sua máquina.
 
 2. **Instalação das Dependências**  
 Abra seu terminal ou prompt de comando e instale as bibliotecas necessárias:
 ~~~
-pip install streamlit pandas numpy
+pip install flask
 ~~~
 
-3. **Executando o Simulador**  
-Salve o código do simulador em um arquivo chamado `simulador.py`.
+3. **Executando a API**
+- Navegue pelo terminal até a pasta onde você salvou o projeto.
+- Execute o seguinte comando:
+~~~
+flask --app api run
+~~~
 
-- Navegue pelo terminal até a pasta onde você salvou o arquivo.
+3. 1 **Executando em outro sistema operacional**  
+Caso você esteja em um sistema operacional Linux, abra a pasta onde está salvo o projeto e execute o seguinte comando:
+~~~
+python3 -m flask --app api run
+~~~
+
+4. **Executando o Simulador** 
+- Navegue pelo terminal até a pasta onde você salvou o projeto.
 - Execute o seguinte comando:
 ~~~
 streamlit run simulador.py
 ~~~
 > O Streamlit abrirá automaticamente uma aba no seu navegador padrão, exibindo o dashboard.
 
-3. 1 **Executando em outro sistema operacional**  
-Caso você esteja em um sistema operacional Linux, abra a pasta onde está salvo o arquivo e execute o seguinte comando:
+4. 1 **Executando em outro sistema operacional**  
+Caso você esteja em um sistema operacional Linux, abra a pasta onde está salvo o projeto e execute o seguinte comando:
 ~~~
 python3 -m streamlit run simulador.py
 ~~~
 >O Streamlit abrirá normalmente pelo navegador padrão do usúario.
+
 
 ## 📊 O que você verá?
 O dashboard apresentará um título e um conjunto de métricas e gráficos que se atualizam automaticamente a cada 5 segundos.
