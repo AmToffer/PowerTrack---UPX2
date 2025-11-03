@@ -1,19 +1,20 @@
 from flask import Flask, request, jsonify
 import threading
+import pprint # Para logar melhor
 
 app = Flask(__name__)
 
-# Este dicionário vai armazenar o estado atual da casa (em memória)
-# Ele já começa com os valores do seu protótipo
-estado_da_casa = {
-    "quarto_principal": 0.0,
-    "cozinha": 0.0,
-    "chuveiro": 0.0,
-    "iluminacao_geral": 0.0,
-    "total": 0.0
+# --- NOVA ESTRUTURA DE DADOS ---
+# Agora, armazenamos o estado de cada DISPOSITIVO
+# Ex: { "cozinha": {"microondas": 1400, "geladeira": 250}, "chuveiro": {"chuveiro_1": 5500} }
+estado_dos_dispositivos = {
+    "quarto_principal": {},
+    "cozinha": {},
+    "chuveiro": {},
+    "iluminacao_geral": {}
 }
 
-# Lock para evitar problemas de concorrência ao atualizar o estado
+# Lock para evitar problemas de concorrência
 data_lock = threading.Lock()
 
 # Rota [POST] /update
@@ -21,40 +22,53 @@ data_lock = threading.Lock()
 @app.route('/update', methods=['POST'])
 def update_data():
     with data_lock:
-        circuito = request.form['circuito']
-        wattage = float(request.form['wattage'])
-        
-        # Mapeia o circuito do Unity para o nosso estado
-        if circuito == "chuveiro":
-            estado_da_casa["chuveiro"] = wattage
-        elif circuito == "quarto_principal":
-            estado_da_casa["quarto_principal"] = wattage
-        elif circuito == "cozinha":
-            estado_da_casa["cozinha"] = wattage
-        elif circuito == "iluminacao_geral":
-            estado_da_casa["iluminacao_geral"] = wattage
+        try:
+            circuito = request.form['circuito']
+            dispositivo_id = request.form['dispositivo_id']
+            wattage = float(request.form['wattage'])
             
-        # Recalcula o total
-        estado_da_casa["total"] = (
-            estado_da_casa["chuveiro"] +
-            estado_da_casa["quarto_principal"] +
-            estado_da_casa["cozinha"] +
-            estado_da_casa["iluminacao_geral"]
-        )
-        
-    return jsonify({"status": "sucesso"})
+            # Garante que o circuito existe no dicionário
+            if circuito not in estado_dos_dispositivos:
+                estado_dos_dispositivos[circuito] = {}
+                
+            # Atualiza o wattage daQUELE dispositivo específico
+            estado_dos_dispositivos[circuito][dispositivo_id] = wattage
+            
+            print("--- Estado Atualizado ---")
+            pprint.pprint(estado_dos_dispositivos)
+            
+            return jsonify({"status": "sucesso"})
+            
+        except Exception as e:
+            return jsonify({"status": "erro", "mensagem": str(e)}), 400
 
 # Rota [GET] /data
 # O Streamlit vai ler os dados daqui
 @app.route('/data', methods=['GET'])
 def get_data():
     with data_lock:
-        # Retorna uma cópia do estado atual
-        return jsonify(dict(estado_da_casa))
+        # --- NOVA LÓGICA DE SOMA ---
+        # Agora, calculamos os totais SOMANDO os dispositivos de cada circuito
+        
+        total_cozinha = sum(estado_dos_dispositivos.get("cozinha", {}).values())
+        total_quarto = sum(estado_dos_dispositivos.get("quarto_principal", {}).values())
+        total_chuveiro = sum(estado_dos_dispositivos.get("chuveiro", {}).values())
+        total_geral = sum(estado_dos_dispositivos.get("iluminacao_geral", {}).values())
+        
+        total_consumo = total_cozinha + total_quarto + total_chuveiro + total_geral
+
+        # Retorna o JSON com os totais somados
+        return jsonify({
+            "quarto_principal": total_quarto,
+            "cozinha": total_cozinha,
+            "chuveiro": total_chuveiro,
+            "iluminacao_geral": total_geral,
+            "total": total_consumo
+        })
 
 # --- Como rodar esta API ---
 # 1. Abra um terminal
-# 2. Digite: flask --app api run
+# 2. Digite: python3 -m flask --app api run
 # 3. Deixe este terminal rodando
 if __name__ == '__main__':
     app.run(debug=True)

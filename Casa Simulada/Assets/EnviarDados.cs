@@ -1,11 +1,14 @@
 using UnityEngine;
-using UnityEngine.Networking; // <--- Verifique se esta linha NÃO dá erro
+using UnityEngine.Networking;
 using System.Collections;
 
 public class EnviarDados : MonoBehaviour
 {
-    public string circuito = "chuveiro";
-    public float wattage = 5500f;
+    [Header("Configuração do Circuito")]
+    public string circuito = "cozinha";
+    public string dispositivoId = "meu_dispositivo_unico"; // <-- NOVO CAMPO
+    public float wattage = 1400f;
+    
     private bool isOn = false;
 
     // Esta é a função que o Player chama
@@ -13,13 +16,17 @@ public class EnviarDados : MonoBehaviour
     {
         isOn = !isOn;
         float currentWattage = isOn ? wattage : 0f;
-        StartCoroutine(SendData(circuito, currentWattage));
+        
+        Debug.Log($"Toggle {dispositivoId}: {currentWattage}W"); // Log para debug
+        
+        StartCoroutine(SendData(circuito, dispositivoId, currentWattage));
     }
 
-    IEnumerator SendData(string circuitoId, float valor)
+    IEnumerator SendData(string circuitoId, string devId, float valor)
     {
         WWWForm form = new WWWForm();
         form.AddField("circuito", circuitoId);
+        form.AddField("dispositivo_id", devId); // <-- NOVO ENVIO
         form.AddField("wattage", valor.ToString());
 
         using (UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:5000/update", form))
