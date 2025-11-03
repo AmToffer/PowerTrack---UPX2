@@ -689,6 +689,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnviarDados
   circuito: cozinha
+  dispositivoId: microondas
   wattage: 1400
 --- !u!65 &764347458
 BoxCollider:
@@ -1443,6 +1444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnviarDados
   circuito: cozinha
+  dispositivoId: airfryer
   wattage: 1200
 --- !u!65 &1215296079
 BoxCollider:
@@ -1902,6 +1904,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnviarDados
   circuito: cozinha
+  dispositivoId: geladeira
   wattage: 2000
 --- !u!65 &1536615415
 BoxCollider:
