@@ -15,6 +15,16 @@ st.set_page_config(
 st.title("⚡️ PowerTrack: Gêmeo Digital (Simulador)")
 st.caption(f"Lendo dados em tempo real da simulação (via API) | {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}")
 
+# --- NOVO: Input do Limite de Consumo ---
+# Este st.number_input fica FORA do loop 'while', então ele só é desenhado uma vez.
+limite_w = st.number_input(
+    label="Defina seu limite de consumo total (W):",
+    min_value=0,
+    value=5000, # Vamos definir um padrão de 5000W
+    step=100,
+    help="Defina um valor em Watts. Um aviso será exibido se o consumo total ultrapassar este limite."
+)
+
 # --- NOVA FUNÇÃO: Buscar dados da API Flask ---
 def buscar_dados_reais():
     try:
@@ -51,6 +61,7 @@ if 'dados_historico' not in st.session_state:
     ])
 
 # --- Layout do Dashboard ---
+placeholder_aviso = st.empty() # <--- NOVO: Placeholder para o aviso de limite
 placeholder_metricas = st.empty()
 placeholder_grafico = st.empty()
 
@@ -69,12 +80,21 @@ while True:
         # 3. Pegar o último registro para as métricas
         dados_atuais = novos_dados.iloc[0]
 
+        # --- NOVO: Lógica para checar o limite ---
+        consumo_total_atual = dados_atuais['Consumo Total (W)']
+        with placeholder_aviso.container():
+            if consumo_total_atual > limite_w:
+                st.warning(f"⚠️ **ALERTA!** Consumo atual ({consumo_total_atual:.0f} W) ultrapassou o limite de {limite_w:.0f} W!")
+            else:
+                # Se o consumo estiver abaixo, o placeholder fica vazio
+                st.empty()
+
         # --- Atualizar as Métricas ---
         with placeholder_metricas.container():
             st.subheader("Consumo em Tempo Real por Cômodo/Setor")
             col1, col2, col3, col4, col5 = st.columns(5)
             
-            col1.metric(label="🔌 Consumo Total", value=f"{dados_atuais['Consumo Total (W)']:.0f} W")
+            col1.metric(label="🔌 Consumo Total", value=f"{consumo_total_atual:.0f} W") 
             col2.metric(label="🛏️ Quarto Principal", value=f"{dados_atuais['Quarto Principal (W)']:.0f} W")
             col3.metric(label="🍳 Cozinha", value=f"{dados_atuais['Cozinha (W)']:.0f} W")
             col4.metric(label="🚿 Chuveiro", value=f"{dados_atuais['Chuveiro (W)']:.0f} W")
