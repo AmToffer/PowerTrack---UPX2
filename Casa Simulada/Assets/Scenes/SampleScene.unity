@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 518ef62e3d48798dbaa0fa204ec3bb1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnviarDados
-  circuito: cozinha
+  circuito: quarto_principal
   dispositivoId: microondas
   wattage: 1400
 --- !u!65 &764347458
