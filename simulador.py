@@ -37,7 +37,7 @@ def buscar_dados_reais():
             # Formata os dados para o dataframe
             df_dados = pd.DataFrame({
                 'Timestamp': [datetime.now()],
-                'Quarto Principal (W)': [dados.get("quarto_principal", 0)],
+                'Quarto Principal (W)': [dados.get("quarto", 0)],
                 'Cozinha (W)': [dados.get("cozinha", 0)],
                 'Chuveiro (W)': [dados.get("chuveiro", 0)],
                 'Iluminação/Geral (W)': [dados.get("iluminacao_geral", 0)],
