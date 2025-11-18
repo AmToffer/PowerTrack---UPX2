@@ -6,19 +6,38 @@ public class EnviarDados : MonoBehaviour
 {
     [Header("Configuração do Circuito")]
     public string circuito = "cozinha";
-    public string dispositivoId = "meu_dispositivo_unico"; // <-- NOVO CAMPO
-    public float wattage = 1400f;
+    public string dispositivoId = "geladeira";
+    public float wattage = 250f;
+
+    [Header("Configuração Visual")]
+    public Renderer luzIndicadora; // O objeto que vai mudar de cor (LED)
+    public Color corLigado = Color.green;
+    public Color corDesligado = Color.red;
     
     private bool isOn = false;
 
-    // Esta é a função que o Player chama
+    void Start()
+    {
+        // Garante que a luz comece com a cor de "Desligado"
+        if (luzIndicadora != null)
+        {
+            luzIndicadora.material.color = corDesligado;
+        }
+    }
+
     public void ToggleState()
     {
         isOn = !isOn;
         float currentWattage = isOn ? wattage : 0f;
         
-        Debug.Log($"Toggle {dispositivoId}: {currentWattage}W"); // Log para debug
+        // --- MUDANÇA VISUAL ---
+        if (luzIndicadora != null)
+        {
+            // Se estiver ligado, fica Verde. Se desligado, Vermelho.
+            luzIndicadora.material.color = isOn ? corLigado : corDesligado;
+        }
         
+        Debug.Log($"Toggle {dispositivoId}: {currentWattage}W");
         StartCoroutine(SendData(circuito, dispositivoId, currentWattage));
     }
 
@@ -26,21 +45,12 @@ public class EnviarDados : MonoBehaviour
     {
         WWWForm form = new WWWForm();
         form.AddField("circuito", circuitoId);
-        form.AddField("dispositivo_id", devId); // <-- NOVO ENVIO
+        form.AddField("dispositivo_id", devId);
         form.AddField("wattage", valor.ToString());
 
         using (UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:5000/update", form))
         {
             yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
-            {
-                Debug.Log("Erro ao enviar dados: " + www.error);
-            }
-            else
-            {
-                Debug.Log("Dados enviados para a API!");
-            }
         }
     }
 }

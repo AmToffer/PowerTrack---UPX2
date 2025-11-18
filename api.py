@@ -8,7 +8,7 @@ app = Flask(__name__)
 # Agora, armazenamos o estado de cada DISPOSITIVO
 # Ex: { "cozinha": {"microondas": 1400, "geladeira": 250}, "chuveiro": {"chuveiro_1": 5500} }
 estado_dos_dispositivos = {
-    "quarto_principal": {},
+    "quarto": {},
     "cozinha": {},
     "chuveiro": {},
     "iluminacao_geral": {}
@@ -51,7 +51,7 @@ def get_data():
         # Agora, calculamos os totais SOMANDO os dispositivos de cada circuito
         
         total_cozinha = sum(estado_dos_dispositivos.get("cozinha", {}).values())
-        total_quarto = sum(estado_dos_dispositivos.get("quarto_principal", {}).values())
+        total_quarto = sum(estado_dos_dispositivos.get("quarto", {}).values())
         total_chuveiro = sum(estado_dos_dispositivos.get("chuveiro", {}).values())
         total_geral = sum(estado_dos_dispositivos.get("iluminacao_geral", {}).values())
         
@@ -59,7 +59,7 @@ def get_data():
 
         # Retorna o JSON com os totais somados
         return jsonify({
-            "quarto_principal": total_quarto,
+            "quarto": total_quarto,
             "cozinha": total_cozinha,
             "chuveiro": total_chuveiro,
             "iluminacao_geral": total_geral,
