@@ -59,7 +59,7 @@ def get_data():
 
         # Retorna o JSON com os totais somados
         return jsonify({
-            "quarto_principal": total_quarto,
+            "quarto": total_quarto,
             "cozinha": total_cozinha,
             "chuveiro": total_chuveiro,
             "iluminacao_geral": total_geral,
